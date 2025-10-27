@@ -1,7 +1,7 @@
 import { NameValue } from "@/api/domain/values/name.value"
 import { UserRepository } from "@/api/infrastructure/repositories/user.repository"
-import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
-import { NotFoundGraphQLError } from "@/api/interface/errors/not-found-graphql-error"
+import { InternalError } from "@/api/interface/errors/internal-error"
+import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import type { Context } from "@/env"
 
 /**
@@ -31,7 +31,7 @@ export class UpdateUser {
       const user = await this.deps.repository.read(props.id)
 
       if (user === null) {
-        return new NotFoundGraphQLError("指定されたユーザーが存在しません。")
+        return new NotFoundError("指定されたユーザーが存在しません。")
       }
 
       const draft = user
@@ -42,12 +42,12 @@ export class UpdateUser {
       const result = await this.deps.repository.write(draft)
 
       if (result instanceof Error) {
-        return new InternalGraphQLError()
+        return new InternalError()
       }
 
       return user
     } catch (_error) {
-      return new InternalGraphQLError()
+      return new InternalError()
     }
   }
 }

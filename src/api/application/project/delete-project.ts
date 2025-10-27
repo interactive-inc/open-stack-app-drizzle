@@ -1,6 +1,6 @@
 import { ProjectRepository } from "@/api/infrastructure/repositories/project.repository"
-import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
-import { NotFoundGraphQLError } from "@/api/interface/errors/not-found-graphql-error"
+import { InternalError } from "@/api/interface/errors/internal-error"
+import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import type { Context } from "@/env"
 
 type Props = {
@@ -23,11 +23,11 @@ export class DeleteProject {
       const project = await this.deps.repository.read(props.projectId)
 
       if (project === null) {
-        return new NotFoundGraphQLError("プロジェクトが見つかりません。")
+        return new NotFoundError("プロジェクトが見つかりません。")
       }
 
       if (project.deletedAt !== null) {
-        return new NotFoundGraphQLError("プロジェクトが見つかりません。")
+        return new NotFoundError("プロジェクトが見つかりません。")
       }
 
       const draft = project.delete()
@@ -35,12 +35,12 @@ export class DeleteProject {
       const result = await this.deps.repository.write(draft)
 
       if (result instanceof Error) {
-        return new InternalGraphQLError()
+        return new InternalError()
       }
 
       return { id: draft.id }
     } catch (_error) {
-      return new InternalGraphQLError()
+      return new InternalError()
     }
   }
 }

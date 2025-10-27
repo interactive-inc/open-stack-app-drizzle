@@ -1,5 +1,4 @@
 import type { DrizzleD1Database } from "drizzle-orm/d1"
-import type { YogaInitialContext } from "graphql-yoga"
 import type { SessionPayload } from "@/api/types"
 import type { schema } from "@/schema"
 
@@ -30,5 +29,3 @@ export type Context = {
   var: Variables
   env: Bindings
 }
-
-export type YogaContext = YogaInitialContext & Context

@@ -2,8 +2,8 @@ import { eq } from "drizzle-orm"
 import { ProjectEntity } from "@/api/domain/entities/project.entity"
 import { NameValue } from "@/api/domain/values/name.value"
 import { ProjectRepository } from "@/api/infrastructure/repositories/project.repository"
-import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
-import { NotFoundGraphQLError } from "@/api/interface/errors/not-found-graphql-error"
+import { InternalError } from "@/api/interface/errors/internal-error"
+import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import type { Context } from "@/env"
 import { schema } from "@/schema"
 
@@ -28,7 +28,7 @@ export class CreateProject {
       })
 
       if (user === null) {
-        return new NotFoundGraphQLError("ユーザーが見つかりません。")
+        return new NotFoundError("ユーザーが見つかりません。")
       }
 
       const projectId = crypto.randomUUID()
@@ -45,7 +45,7 @@ export class CreateProject {
       const writeResult = await this.deps.repository.write(project)
 
       if (writeResult instanceof Error) {
-        return new InternalGraphQLError("プロジェクトの作成に失敗しました。")
+        return new InternalError("プロジェクトの作成に失敗しました。")
       }
 
       await this.c.var.database.insert(schema.projectMembers).values({
@@ -58,7 +58,7 @@ export class CreateProject {
 
       return project
     } catch (_error) {
-      return new InternalGraphQLError()
+      return new InternalError()
     }
   }
 }

@@ -1,7 +1,7 @@
 import { NameValue } from "@/api/domain/values/name.value"
 import { ProjectRepository } from "@/api/infrastructure/repositories/project.repository"
-import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
-import { NotFoundGraphQLError } from "@/api/interface/errors/not-found-graphql-error"
+import { InternalError } from "@/api/interface/errors/internal-error"
+import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import type { Context } from "@/env"
 
 type Props = {
@@ -25,7 +25,7 @@ export class UpdateProject {
       const project = await this.deps.repository.read(props.projectId)
 
       if (project === null) {
-        return new NotFoundGraphQLError("プロジェクトが見つかりませんでした")
+        return new NotFoundError("プロジェクトが見つかりませんでした")
       }
 
       const draft = project.updateName(new NameValue(props.name))
@@ -33,12 +33,12 @@ export class UpdateProject {
       const result = await this.deps.repository.write(draft)
 
       if (result instanceof Error) {
-        return new InternalGraphQLError()
+        return new InternalError()
       }
 
       return null
     } catch (_error) {
-      return new InternalGraphQLError()
+      return new InternalError()
     }
   }
 }

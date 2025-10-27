@@ -2,7 +2,7 @@ import { hashSync } from "bcrypt-ts"
 import { UserEntity } from "@/api/domain/entities/user.entity"
 import { NameValue } from "@/api/domain/values/name.value"
 import { UserRepository } from "@/api/infrastructure/repositories/user.repository"
-import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
+import { InternalError } from "@/api/interface/errors/internal-error"
 import type { Context } from "@/env"
 
 type Props = {
@@ -36,12 +36,12 @@ export class CreateUser {
       const result = await repository.write(user)
 
       if (result instanceof Error) {
-        return new InternalGraphQLError("ユーザの作成に失敗しました。")
+        return new InternalError("ユーザの作成に失敗しました。")
       }
 
       return user
     } catch (_error) {
-      return new InternalGraphQLError()
+      return new InternalError()
     }
   }
 }

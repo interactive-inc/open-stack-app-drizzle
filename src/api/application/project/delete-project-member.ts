@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 import { ProjectMemberRepository } from "@/api/infrastructure/repositories/project-member.repository"
-import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
-import { NotFoundGraphQLError } from "@/api/interface/errors/not-found-graphql-error"
+import { InternalError } from "@/api/interface/errors/internal-error"
+import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import type { Context } from "@/env"
 import { projectMembers } from "@/schema"
 
@@ -29,9 +29,7 @@ export class DeleteProjectMember {
       )
 
       if (projectMember === null) {
-        return new NotFoundGraphQLError(
-          "プロジェクトメンバーが見つかりませんでした。",
-        )
+        return new NotFoundError("プロジェクトメンバーが見つかりませんでした。")
       }
 
       await this.c.var.database
@@ -40,7 +38,7 @@ export class DeleteProjectMember {
 
       return { id: props.userId }
     } catch (_error) {
-      return new InternalGraphQLError()
+      return new InternalError()
     }
   }
 }
