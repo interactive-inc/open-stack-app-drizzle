@@ -1,0 +1,46 @@
+import { eq } from "drizzle-orm"
+import { ProjectMemberRepository } from "@/api/infrastructure/repositories/project-member.repository"
+import { InternalGraphQLError } from "@/api/interface/errors/internal-graphql-error"
+import { NotFoundGraphQLError } from "@/api/interface/errors/not-found-graphql-error"
+import type { Context } from "@/env"
+import { projectMembers } from "@/schema"
+
+type Props = {
+  projectId: string
+  userId: string
+}
+
+/**
+ * プロジェクトメンバーを削除する
+ */
+export class DeleteProjectMember {
+  constructor(
+    readonly c: Context,
+    readonly deps = {
+      repository: new ProjectMemberRepository(c),
+    },
+  ) {}
+
+  async run(props: Props) {
+    try {
+      const projectMember = await this.deps.repository.read(
+        props.projectId,
+        props.userId,
+      )
+
+      if (projectMember === null) {
+        return new NotFoundGraphQLError(
+          "プロジェクトメンバーが見つかりませんでした。",
+        )
+      }
+
+      await this.c.var.database
+        .delete(projectMembers)
+        .where(eq(projectMembers.id, props.userId))
+
+      return { id: props.userId }
+    } catch (_error) {
+      return new InternalGraphQLError()
+    }
+  }
+}
