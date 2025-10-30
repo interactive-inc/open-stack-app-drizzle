@@ -1,7 +1,8 @@
 import type { InferSelectModel } from "drizzle-orm"
+import { relations } from "drizzle-orm"
 import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core"
 
-export const users = sqliteTable("users", {
+export const drizzleUsers = sqliteTable("users", {
   id: text("id").primaryKey(),
   login: text("login").notNull().unique(),
   email: text("email").notNull().unique(),
@@ -14,7 +15,13 @@ export const users = sqliteTable("users", {
     .$onUpdate(() => new Date()),
 })
 
-export const projects = sqliteTable("projects", {
+export type DrizzleUser = InferSelectModel<typeof drizzleUsers>
+
+export const usersRelations = relations(drizzleUsers, ({ many }) => ({
+  projectMembers: many(drizzleProjectMembers),
+}))
+
+export const drizzleProjects = sqliteTable("projects", {
   id: text("id").primaryKey(),
   login: text("login").notNull().unique(),
   name: text("name").notNull(),
@@ -25,28 +32,51 @@ export const projects = sqliteTable("projects", {
     .$onUpdate(() => new Date()),
 })
 
-export const projectMembers = sqliteTable(
+export type DrizzleProject = InferSelectModel<typeof drizzleProjects>
+
+export const projectsRelations = relations(drizzleProjects, ({ many }) => ({
+  projectMembers: many(drizzleProjectMembers),
+}))
+
+export const drizzleProjectMembers = sqliteTable(
   "project_members",
   {
     id: text("id").primaryKey(),
     projectId: text("project_id")
       .notNull()
-      .references(() => projects.id),
+      .references(() => drizzleProjects.id),
     userId: text("user_id")
       .notNull()
-      .references(() => users.id),
+      .references(() => drizzleUsers.id),
     role: text("role").notNull().default("OWNER"),
     createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   },
   (table) => [unique().on(table.projectId, table.userId)],
 )
 
-export const schema = {
-  users,
-  projects,
-  projectMembers,
-}
+export type DrizzleProjectMember = InferSelectModel<
+  typeof drizzleProjectMembers
+>
 
-export type User = InferSelectModel<typeof users>
-export type Project = InferSelectModel<typeof projects>
-export type ProjectMember = InferSelectModel<typeof projectMembers>
+export const projectMembersRelations = relations(
+  drizzleProjectMembers,
+  ({ one }) => ({
+    project: one(drizzleProjects, {
+      fields: [drizzleProjectMembers.projectId],
+      references: [drizzleProjects.id],
+    }),
+    user: one(drizzleUsers, {
+      fields: [drizzleProjectMembers.userId],
+      references: [drizzleUsers.id],
+    }),
+  }),
+)
+
+export const schema = {
+  users: drizzleUsers,
+  projects: drizzleProjects,
+  projectMembers: drizzleProjectMembers,
+  usersRelations,
+  projectsRelations,
+  projectMembersRelations,
+}

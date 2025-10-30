@@ -3,7 +3,7 @@ import { ProjectMemberRepository } from "@/api/infrastructure/repositories/proje
 import { InternalError } from "@/api/interface/errors/internal-error"
 import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import type { Context } from "@/env"
-import { projectMembers } from "@/schema"
+import { drizzleProjectMembers } from "@/schema"
 
 type Props = {
   projectId: string
@@ -33,10 +33,10 @@ export class DeleteProjectMember {
       }
 
       await this.c.var.database
-        .delete(projectMembers)
-        .where(eq(projectMembers.id, props.userId))
+        .delete(drizzleProjectMembers)
+        .where(eq(drizzleProjectMembers.id, projectMember.id))
 
-      return { id: props.userId }
+      return { id: projectMember.id }
     } catch (_error) {
       return new InternalError()
     }

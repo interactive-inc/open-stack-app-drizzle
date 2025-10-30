@@ -9,10 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as NewRouteImport } from './routes/new'
 import { Route as ErrorRouteImport } from './routes/error'
 import { Route as ApiRouteImport } from './routes/api'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as SessionRouteImport } from './routes/_session'
+import { Route as SessionIndexRouteImport } from './routes/_session.index'
+import { Route as SessionUsersIndexRouteImport } from './routes/_session.users.index'
+import { Route as SessionProjectsIndexRouteImport } from './routes/_session.projects.index'
+import { Route as SessionProjectsIdRouteImport } from './routes/_session.projects.$id'
+import { Route as SessionMyAccountRouteImport } from './routes/_session.my.account'
 
+const NewRoute = NewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ErrorRoute = ErrorRouteImport.update({
   id: '/error',
   path: '/error',
@@ -23,44 +34,118 @@ const ApiRoute = ApiRouteImport.update({
   path: '/api',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const SessionRoute = SessionRouteImport.update({
+  id: '/_session',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SessionIndexRoute = SessionIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => SessionRoute,
+} as any)
+const SessionUsersIndexRoute = SessionUsersIndexRouteImport.update({
+  id: '/users/',
+  path: '/users/',
+  getParentRoute: () => SessionRoute,
+} as any)
+const SessionProjectsIndexRoute = SessionProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => SessionRoute,
+} as any)
+const SessionProjectsIdRoute = SessionProjectsIdRouteImport.update({
+  id: '/projects/$id',
+  path: '/projects/$id',
+  getParentRoute: () => SessionRoute,
+} as any)
+const SessionMyAccountRoute = SessionMyAccountRouteImport.update({
+  id: '/my/account',
+  path: '/my/account',
+  getParentRoute: () => SessionRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/api': typeof ApiRoute
   '/error': typeof ErrorRoute
+  '/new': typeof NewRoute
+  '/': typeof SessionIndexRoute
+  '/my/account': typeof SessionMyAccountRoute
+  '/projects/$id': typeof SessionProjectsIdRoute
+  '/projects': typeof SessionProjectsIndexRoute
+  '/users': typeof SessionUsersIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/api': typeof ApiRoute
   '/error': typeof ErrorRoute
+  '/new': typeof NewRoute
+  '/': typeof SessionIndexRoute
+  '/my/account': typeof SessionMyAccountRoute
+  '/projects/$id': typeof SessionProjectsIdRoute
+  '/projects': typeof SessionProjectsIndexRoute
+  '/users': typeof SessionUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_session': typeof SessionRouteWithChildren
   '/api': typeof ApiRoute
   '/error': typeof ErrorRoute
+  '/new': typeof NewRoute
+  '/_session/': typeof SessionIndexRoute
+  '/_session/my/account': typeof SessionMyAccountRoute
+  '/_session/projects/$id': typeof SessionProjectsIdRoute
+  '/_session/projects/': typeof SessionProjectsIndexRoute
+  '/_session/users/': typeof SessionUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api' | '/error'
+  fullPaths:
+    | '/api'
+    | '/error'
+    | '/new'
+    | '/'
+    | '/my/account'
+    | '/projects/$id'
+    | '/projects'
+    | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api' | '/error'
-  id: '__root__' | '/' | '/api' | '/error'
+  to:
+    | '/api'
+    | '/error'
+    | '/new'
+    | '/'
+    | '/my/account'
+    | '/projects/$id'
+    | '/projects'
+    | '/users'
+  id:
+    | '__root__'
+    | '/_session'
+    | '/api'
+    | '/error'
+    | '/new'
+    | '/_session/'
+    | '/_session/my/account'
+    | '/_session/projects/$id'
+    | '/_session/projects/'
+    | '/_session/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  SessionRoute: typeof SessionRouteWithChildren
   ApiRoute: typeof ApiRoute
   ErrorRoute: typeof ErrorRoute
+  NewRoute: typeof NewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/error': {
       id: '/error'
       path: '/error'
@@ -75,20 +160,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_session': {
+      id: '/_session'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof SessionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_session/': {
+      id: '/_session/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof SessionIndexRouteImport
+      parentRoute: typeof SessionRoute
+    }
+    '/_session/users/': {
+      id: '/_session/users/'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof SessionUsersIndexRouteImport
+      parentRoute: typeof SessionRoute
+    }
+    '/_session/projects/': {
+      id: '/_session/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof SessionProjectsIndexRouteImport
+      parentRoute: typeof SessionRoute
+    }
+    '/_session/projects/$id': {
+      id: '/_session/projects/$id'
+      path: '/projects/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof SessionProjectsIdRouteImport
+      parentRoute: typeof SessionRoute
+    }
+    '/_session/my/account': {
+      id: '/_session/my/account'
+      path: '/my/account'
+      fullPath: '/my/account'
+      preLoaderRoute: typeof SessionMyAccountRouteImport
+      parentRoute: typeof SessionRoute
     }
   }
 }
 
+interface SessionRouteChildren {
+  SessionIndexRoute: typeof SessionIndexRoute
+  SessionMyAccountRoute: typeof SessionMyAccountRoute
+  SessionProjectsIdRoute: typeof SessionProjectsIdRoute
+  SessionProjectsIndexRoute: typeof SessionProjectsIndexRoute
+  SessionUsersIndexRoute: typeof SessionUsersIndexRoute
+}
+
+const SessionRouteChildren: SessionRouteChildren = {
+  SessionIndexRoute: SessionIndexRoute,
+  SessionMyAccountRoute: SessionMyAccountRoute,
+  SessionProjectsIdRoute: SessionProjectsIdRoute,
+  SessionProjectsIndexRoute: SessionProjectsIndexRoute,
+  SessionUsersIndexRoute: SessionUsersIndexRoute,
+}
+
+const SessionRouteWithChildren =
+  SessionRoute._addFileChildren(SessionRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  SessionRoute: SessionRouteWithChildren,
   ApiRoute: ApiRoute,
   ErrorRoute: ErrorRoute,
+  NewRoute: NewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

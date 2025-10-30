@@ -1,12 +1,58 @@
 import { zValidator } from "@hono/zod-validator"
+import { eq } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { z } from "zod"
+import { CreateUser } from "@/api/application/user/create-user"
 import { UpdateUser } from "@/api/application/user/update-user"
 import { InternalError } from "@/api/interface/errors/internal-error"
 import { NotFoundError } from "@/api/interface/errors/not-found-error"
 import { factory } from "@/api/interface/factory"
+import { drizzleUsers } from "@/schema"
 
-export const [PUT] = factory.createHandlers(
+// GET /users - List all users
+export const GET = factory.createHandlers(async (c) => {
+  const users = await c.var.database.query.users.findMany()
+
+  return c.json(users)
+})
+
+// POST /users - Create a new user
+export const POST = factory.createHandlers(
+  zValidator(
+    "json",
+    z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+    }),
+  ),
+  async (c) => {
+    const json = c.req.valid("json")
+
+    const createUser = new CreateUser(c)
+
+    const result = await createUser.run({
+      email: json.email,
+      password: json.password,
+    })
+
+    if (result instanceof InternalError) {
+      throw new HTTPException(500, { message: result.message })
+    }
+
+    const user = await c.var.database.query.users.findFirst({
+      where: eq(drizzleUsers.id, result.id),
+    })
+
+    if (!user) {
+      throw new HTTPException(404, { message: "User not found" })
+    }
+
+    return c.json(user)
+  },
+)
+
+// PUT /users/:id - Update a user
+export const PUT = factory.createHandlers(
   zValidator(
     "param",
     z.object({

@@ -11,14 +11,10 @@ import * as auth_sign_up from "@/api/interface/routes/auth.sign.up"
 import * as debug_projects from "@/api/interface/routes/debug.projects"
 import * as debug_random from "@/api/interface/routes/debug.random"
 import * as index from "@/api/interface/routes/index"
-import * as project_members_create from "@/api/interface/routes/project-members.create"
-import * as project_members_delete from "@/api/interface/routes/project-members.delete"
+import * as project_members_$id from "@/api/interface/routes/project-members.$id"
 import * as projects from "@/api/interface/routes/projects"
-import * as projects_create from "@/api/interface/routes/projects.create"
-import * as projects_delete from "@/api/interface/routes/projects.delete"
-import * as projects_update from "@/api/interface/routes/projects.update"
-import * as users_create from "@/api/interface/routes/users.create"
-import * as users_update from "@/api/interface/routes/users.update"
+import * as projects_$id from "@/api/interface/routes/projects.$id"
+import * as users from "@/api/interface/routes/users"
 
 export const app = factory
   .createApp()
@@ -27,23 +23,28 @@ export const app = factory
   .use(databaseMiddleware)
   .use(sessionMiddleware)
   .basePath("/api")
-  .get("/", index.GET)
-  .get("/auth/session", auth_session.GET)
-  .post("/auth/sign/in", auth_sign_in.POST)
-  .post("/auth/sign/up", auth_sign_up.POST)
-  .post("/auth/sign/out", auth_sign_out.POST)
-  .get("/debug/random", debug_random.GET)
-  .post("/debug/projects", debug_projects.GET)
-  .get("/projects", projects.GET)
-  .post("/projects", projects_create.POST)
-  .put("/projects/:id", projects_update.PUT)
-  .delete("/projects/:id", projects_delete.DELETE)
-  .post("/projects/:id/members", project_members_create.POST)
-  .delete("/projects/:id/members/:userId", project_members_delete.DELETE)
-  .post("/users", users_create.POST)
-  .put("/users/:id", users_update.PUT)
+  .get("/", ...index.GET)
+  .get("/auth/session", ...auth_session.GET)
+  .post("/auth/sign/in", ...auth_sign_in.POST)
+  .post("/auth/sign/up", ...auth_sign_up.POST)
+  .post("/auth/sign/out", ...auth_sign_out.POST)
+  .get("/debug/random", ...debug_random.GET)
+  .post("/debug/projects", ...debug_projects.GET)
+  .get("/projects", ...projects.GET)
+  .post("/projects", ...projects.POST)
+  .get("/projects/:id", ...projects_$id.GET)
+  .put("/projects/:id", ...projects_$id.PUT)
+  .delete("/projects/:id", ...projects_$id.DELETE)
+  .get("/projects/:id/members", ...project_members_$id.GET)
+  .post("/projects/:id/members", ...project_members_$id.POST)
+  .delete("/projects/:id/members/:userId", ...project_members_$id.DELETE)
+  .get("/users", ...users.GET)
+  .post("/users", ...users.POST)
+  .put("/users/:id", ...users.PUT)
 
 app.onError((e, c) => {
+  console.error(e)
+
   if (e instanceof HTTPException) {
     return c.json({ message: e.message }, { status: e.status })
   }

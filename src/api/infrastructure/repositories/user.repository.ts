@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm"
 import { UserEntity } from "@/api/domain/entities/user.entity"
 import { NameValue } from "@/api/domain/values/name.value"
 import type { Context } from "@/env"
-import { users } from "@/schema"
+import { drizzleUsers } from "@/schema"
 
 export class UserRepository {
   constructor(readonly c: Context) {}
@@ -10,11 +10,11 @@ export class UserRepository {
   async write(entity: UserEntity) {
     try {
       const existingUser = await this.c.var.database.query.users.findFirst({
-        where: eq(users.id, entity.id),
+        where: eq(drizzleUsers.id, entity.id),
       })
 
       if (existingUser === undefined) {
-        await this.c.var.database.insert(users).values({
+        await this.c.var.database.insert(drizzleUsers).values({
           id: entity.id,
           login: entity.login,
           email: entity.email,
@@ -26,14 +26,14 @@ export class UserRepository {
         })
       } else {
         await this.c.var.database
-          .update(users)
+          .update(drizzleUsers)
           .set({
             login: entity.login,
             email: entity.email,
             name: entity.name.value,
             hashedPassword: entity.hashedPassword,
           })
-          .where(eq(users.id, entity.id))
+          .where(eq(drizzleUsers.id, entity.id))
       }
 
       return null
@@ -46,7 +46,7 @@ export class UserRepository {
   async read(id: string): Promise<UserEntity | null> {
     try {
       const user = await this.c.var.database.query.users.findFirst({
-        where: eq(users.id, id),
+        where: eq(drizzleUsers.id, id),
       })
 
       if (user === undefined) {

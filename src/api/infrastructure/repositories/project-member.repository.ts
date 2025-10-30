@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm"
 import { ProjectMemberEntity } from "@/api/domain/entities/project-member.entity"
 import type { Context } from "@/env"
-import { projectMembers } from "@/schema"
+import { drizzleProjectMembers } from "@/schema"
 
 export class ProjectMemberRepository {
   constructor(readonly c: Context) {}
@@ -10,11 +10,11 @@ export class ProjectMemberRepository {
     try {
       const existingMember =
         await this.c.var.database.query.projectMembers.findFirst({
-          where: eq(projectMembers.id, entity.id),
+          where: eq(drizzleProjectMembers.id, entity.id),
         })
 
       if (existingMember === undefined) {
-        await this.c.var.database.insert(projectMembers).values({
+        await this.c.var.database.insert(drizzleProjectMembers).values({
           id: entity.id,
           projectId: entity.projectId,
           userId: entity.userId,
@@ -23,13 +23,13 @@ export class ProjectMemberRepository {
         })
       } else {
         await this.c.var.database
-          .update(projectMembers)
+          .update(drizzleProjectMembers)
           .set({
             projectId: entity.projectId,
             userId: entity.userId,
             role: entity.role,
           })
-          .where(eq(projectMembers.id, entity.id))
+          .where(eq(drizzleProjectMembers.id, entity.id))
       }
 
       return null
@@ -48,8 +48,8 @@ export class ProjectMemberRepository {
     try {
       const data = await this.c.var.database.query.projectMembers.findFirst({
         where: and(
-          eq(projectMembers.projectId, projectId),
-          eq(projectMembers.userId, userId),
+          eq(drizzleProjectMembers.projectId, projectId),
+          eq(drizzleProjectMembers.userId, userId),
         ),
       })
 

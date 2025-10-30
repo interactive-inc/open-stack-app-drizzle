@@ -29,3 +29,76 @@ Modern React application with TanStack Router and component library. Features ro
 - Bun for package management and testing
 - Biome for linting and formatting
 - Model Context Protocol for documentation
+
+## Data Fetching Pattern
+
+### Query Promise Pattern with Suspense
+
+Use React Suspense with `use(query.promise)` for data fetching components:
+
+**Parent Component (Route)**:
+```typescript
+function ParentPage() {
+  const query = useQuery({
+    queryKey: ['data'],
+    async queryFn() {
+      const response = await client.api.data.$get()
+      return response.json()
+    },
+  })
+
+  return (
+    <div>
+      <Suspense fallback={<LoadingFallback />}>
+        <DataTable query={query} />
+      </Suspense>
+    </div>
+  )
+}
+```
+
+**Child Component (Table/Display)**:
+```typescript
+import type { UseQueryResult } from "@tanstack/react-query"
+import type { InferResponseType } from "hono/client"
+import { use } from "react"
+
+type Result = InferResponseType<typeof client.api.data.$get>
+
+type Props = {
+  query: UseQueryResult<Result>
+}
+
+export function DataTable(props: Props) {
+  const data = use(props.query.promise)
+
+  return (
+    <Table>
+      {/* Render data */}
+    </Table>
+  )
+}
+```
+
+**Key Points**:
+- Parent components manage `useQuery` and pass query object to children
+- Child components use `use(props.query.promise)` to unwrap data
+- Suspense handles loading states declaratively
+- No need for `isLoading` or `isError` checks in child components
+- Type safety with `InferResponseType` from Hono client
+
+### Mutations
+
+Use `refetch()` instead of `queryClient.invalidateQueries()` for simpler cache updates:
+
+```typescript
+const mutation = useMutation({
+  async mutationFn(data) {
+    const response = await client.api.data.$post({ json: data })
+    return response.json()
+  },
+  async onSuccess() {
+    await query.refetch()  // Directly refetch the query
+  },
+})
+```

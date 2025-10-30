@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm"
 import { ProjectEntity } from "@/api/domain/entities/project.entity"
 import { NameValue } from "@/api/domain/values/name.value"
 import type { Context } from "@/env"
-import { projects } from "@/schema"
+import { drizzleProjects } from "@/schema"
 
 export class ProjectRepository {
   constructor(readonly c: Context) {}
@@ -11,11 +11,11 @@ export class ProjectRepository {
     try {
       const existingProject =
         await this.c.var.database.query.projects.findFirst({
-          where: eq(projects.id, entity.id),
+          where: eq(drizzleProjects.id, entity.id),
         })
 
       if (existingProject === undefined) {
-        await this.c.var.database.insert(projects).values({
+        await this.c.var.database.insert(drizzleProjects).values({
           id: entity.id,
           login: entity.login,
           name: entity.name.value,
@@ -25,14 +25,14 @@ export class ProjectRepository {
         })
       } else {
         await this.c.var.database
-          .update(projects)
+          .update(drizzleProjects)
           .set({
             login: entity.login,
             name: entity.name.value,
             updatedAt: entity.updatedAt,
             deletedAt: entity.deletedAt,
           })
-          .where(eq(projects.id, entity.id))
+          .where(eq(drizzleProjects.id, entity.id))
       }
 
       return null
@@ -45,7 +45,7 @@ export class ProjectRepository {
   async read(id: string): Promise<ProjectEntity | null> {
     try {
       const data = await this.c.var.database.query.projects.findFirst({
-        where: eq(projects.id, id),
+        where: eq(drizzleProjects.id, id),
       })
 
       if (data === undefined) {

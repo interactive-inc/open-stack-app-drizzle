@@ -3,7 +3,7 @@ import { decode } from "hono/jwt"
 import { factory } from "@/api/interface/factory"
 import { vSessionPayload } from "@/lib/session/session-payload"
 
-export const [GET] = factory.createHandlers(async (c) => {
+export const GET = factory.createHandlers(async (c) => {
   const cookie = await getSignedCookie(
     c,
     c.env.JWT_COOKIE_SECRET,

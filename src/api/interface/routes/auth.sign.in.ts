@@ -7,9 +7,9 @@ import { sign } from "hono/jwt"
 import { z } from "zod"
 import { factory } from "@/api/interface/factory"
 import { vSessionPayload } from "@/lib/session/session-payload"
-import { users } from "@/schema"
+import { drizzleUsers } from "@/schema"
 
-export const [POST] = factory.createHandlers(
+export const POST = factory.createHandlers(
   zValidator(
     "json",
     z.object({
@@ -21,7 +21,7 @@ export const [POST] = factory.createHandlers(
     const json = c.req.valid("json")
 
     const account = await c.var.database.query.users.findFirst({
-      where: eq(users.email, json.email),
+      where: eq(drizzleUsers.email, json.email),
     })
 
     if (account === undefined) {
