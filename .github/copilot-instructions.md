@@ -110,15 +110,15 @@ The backend follows clean architecture with strict separation of concerns across
 
 ```
 Interface (Routes) → Application (Use Cases) → Domain (Entities)
-                                            ↘
-Infrastructure (Repositories) ← Domain (Entities)
+                  ↘                          ↗
+                   Infrastructure (Repositories)
 ```
 
 **Key Principles**:
 - Inner layers never depend on outer layers
 - Domain layer has zero external dependencies
 - Use cases coordinate but don't contain business logic
-- Infrastructure implements interfaces defined by inner layers
+- Infrastructure implements domain contracts and depends on domain entities
 
 ## API Design
 
@@ -265,7 +265,7 @@ if (session === null) {
 ```typescript
 export const drizzleProjects = sqliteTable("projects", {
   id: text("id").primaryKey(),
-  login: text("login").notNull().unique(),
+  slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 })
@@ -404,7 +404,18 @@ bun wrangler d1 migrations apply open-stack-cloudflare --remote
 
 - **Development**: Uses local D1 database (`.wrangler/state/v3/d1/`)
 - **Production**: Uses remote D1 database via `database_id`
-- Add `"remote": true` to `wrangler.json` to connect to production database during development
+- Add `"remote": true` to the D1 database binding in `wrangler.json` to connect to production database during development:
+
+```json
+{
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "open-stack-cloudflare",
+    "database_id": "...",
+    "remote": true
+  }]
+}
+```
 
 ## System Independence
 
