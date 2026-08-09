@@ -3,18 +3,19 @@ import { hashSync } from "bcrypt-ts"
 import { eq } from "drizzle-orm"
 import { setSignedCookie } from "hono/cookie"
 import { HTTPException } from "hono/http-exception"
-import { sign } from "hono/jwt"
 import { z } from "zod"
 import { factory } from "@/api/interface/factory"
+import { createSessionCookieOptions } from "@/lib/session/session-cookie"
 import { vSessionPayload } from "@/lib/session/session-payload"
+import { createSessionToken } from "@/lib/session/session-token"
 import { drizzleUsers } from "@/schema"
 
 export const POST = factory.createHandlers(
   zValidator(
     "json",
     z.object({
-      email: z.string(),
-      password: z.string(),
+      email: z.string().trim().email().max(254),
+      password: z.string().min(8).max(72),
     }),
   ),
   async (c) => {
@@ -57,22 +58,19 @@ export const POST = factory.createHandlers(
 
     const payload = vSessionPayload.parse({
       userId: account.id,
-      name: "foo",
+      name: account.name,
       email: account.email,
     } satisfies z.infer<typeof vSessionPayload>)
 
-    const cookie = await sign(payload, c.env.JWT_SECRET)
+    const cookie = await createSessionToken(payload, c.env.JWT_SECRET)
 
-    await setSignedCookie(c, c.env.JWT_COOKIE_KEY, cookie, c.env.JWT_COOKIE_SECRET, {
-      /**
-       * クライアントのJavaScriptから参照できないようにする
-       */
-      httpOnly: true,
-      /**
-       * HTTPS通信のみでCookieを送信する
-       */
-      secure: true,
-    })
+    await setSignedCookie(
+      c,
+      c.env.JWT_COOKIE_KEY,
+      cookie,
+      c.env.JWT_COOKIE_SECRET,
+      createSessionCookieOptions(c.req.url),
+    )
 
     return c.json({ id: account.id })
   },

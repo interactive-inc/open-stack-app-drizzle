@@ -1,7 +1,6 @@
 import { getSignedCookie } from "hono/cookie"
-import { decode } from "hono/jwt"
 import { factory } from "@/api/interface/factory"
-import { vSessionPayload } from "@/lib/session/session-payload"
+import { parseSessionToken } from "@/lib/session/session-token"
 
 /**
  * c.var.sessionにログイン情報を設定する
@@ -15,13 +14,13 @@ export const sessionMiddleware = factory.createMiddleware(async (c, next) => {
     return next()
   }
 
-  const session = vSessionPayload.safeParse(decode(cookie).payload)
+  const session = await parseSessionToken(cookie, c.env.JWT_SECRET)
 
-  if (session.success === false) {
+  if (session === null) {
     return next()
   }
 
-  c.set("session", session.data)
+  c.set("session", session)
 
   return next()
 })

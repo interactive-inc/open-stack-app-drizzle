@@ -45,7 +45,7 @@ vp run check
 
 ## マイグレーション
 
-ここでは仮に「open-stack-cloudflare」というデータベース名を使用します。これは[.wrangler.json](./wrangler.json)の `database_name` と一致させてください。
+ここでは仮に「open-stack-cloudflare」というデータベース名を使用します。これは[wrangler.json](./wrangler.json)の `database_name` と一致させてください。
 
 以下のコマンドでマイグレーションのファイルを作成します。
 
@@ -98,13 +98,13 @@ vp exec wrangler d1 create open-stack-cloudflare
 
 ## Accessing bindings
 
-You can access Cloudflare bindings in server functions by using importable `env`:
+Hono handlers can access Cloudflare bindings through `c.env`:
 
 ```ts
-import { env } from "cloudflare:workers"
+const database = c.env.DB
 ```
 
-See `src/api/routes/index.ts` for an example.
+See `src/api/interface/routes/index.ts` and `src/api/interface/middlewares/database-middleware.ts` for examples.
 
 ## メモ
 

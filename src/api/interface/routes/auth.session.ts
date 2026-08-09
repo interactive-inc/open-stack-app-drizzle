@@ -1,7 +1,6 @@
 import { getSignedCookie } from "hono/cookie"
-import { decode } from "hono/jwt"
 import { factory } from "@/api/interface/factory"
-import { vSessionPayload } from "@/lib/session/session-payload"
+import { parseSessionToken } from "@/lib/session/session-token"
 
 export const GET = factory.createHandlers(async (c) => {
   const cookie = await getSignedCookie(c, c.env.JWT_COOKIE_SECRET, c.env.JWT_COOKIE_KEY)
@@ -10,15 +9,7 @@ export const GET = factory.createHandlers(async (c) => {
     return c.json(null)
   }
 
-  const session = vSessionPayload.safeParse(decode(cookie).payload)
+  const session = await parseSessionToken(cookie, c.env.JWT_SECRET)
 
-  if (session.success === false) {
-    return c.json(null)
-  }
-
-  if (session.success !== true) {
-    return c.json(null)
-  }
-
-  return c.json(session.data)
+  return c.json(session)
 })
