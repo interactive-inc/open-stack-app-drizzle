@@ -63,22 +63,16 @@ export const POST = factory.createHandlers(
 
     const cookie = await sign(payload, c.env.JWT_SECRET)
 
-    await setSignedCookie(
-      c,
-      c.env.JWT_COOKIE_KEY,
-      cookie,
-      c.env.JWT_COOKIE_SECRET,
-      {
-        /**
-         * クライアントのJavaScriptから参照できないようにする
-         */
-        httpOnly: true,
-        /**
-         * HTTPS通信のみでCookieを送信する
-         */
-        secure: true,
-      },
-    )
+    await setSignedCookie(c, c.env.JWT_COOKIE_KEY, cookie, c.env.JWT_COOKIE_SECRET, {
+      /**
+       * クライアントのJavaScriptから参照できないようにする
+       */
+      httpOnly: true,
+      /**
+       * HTTPS通信のみでCookieを送信する
+       */
+      secure: true,
+    })
 
     return c.json({ id: account.id })
   },

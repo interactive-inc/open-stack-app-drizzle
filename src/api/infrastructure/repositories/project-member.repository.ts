@@ -8,10 +8,9 @@ export class ProjectMemberRepository {
 
   async write(entity: ProjectMemberEntity) {
     try {
-      const existingMember =
-        await this.c.var.database.query.projectMembers.findFirst({
-          where: eq(drizzleProjectMembers.id, entity.id),
-        })
+      const existingMember = await this.c.var.database.query.projectMembers.findFirst({
+        where: eq(drizzleProjectMembers.id, entity.id),
+      })
 
       if (existingMember === undefined) {
         await this.c.var.database.insert(drizzleProjectMembers).values({
@@ -35,16 +34,11 @@ export class ProjectMemberRepository {
       return null
     } catch (error) {
       console.error(error)
-      return error instanceof Error
-        ? error
-        : new Error("プロジェクトメンバーの保存に失敗しました")
+      return error instanceof Error ? error : new Error("プロジェクトメンバーの保存に失敗しました")
     }
   }
 
-  async read(
-    projectId: string,
-    userId: string,
-  ): Promise<ProjectMemberEntity | null> {
+  async read(projectId: string, userId: string): Promise<ProjectMemberEntity | null> {
     try {
       const data = await this.c.var.database.query.projectMembers.findFirst({
         where: and(

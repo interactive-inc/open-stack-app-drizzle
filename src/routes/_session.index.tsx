@@ -4,13 +4,7 @@ import { FolderKanban, Users } from "lucide-react"
 import { Suspense } from "react"
 import { DebugView } from "@/components/debug-view"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { client } from "@/lib/client"
 
 export const Route = createFileRoute("/_session/")({
@@ -32,9 +26,7 @@ function Home() {
     <div className="container mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="font-bold text-4xl tracking-tight">Dashboard</h1>
-        <p className="mt-2 text-muted-foreground">
-          Welcome to your project management dashboard
-        </p>
+        <p className="mt-2 text-muted-foreground">Welcome to your project management dashboard</p>
       </div>
 
       <div className="mb-8 grid gap-6 md:grid-cols-2">

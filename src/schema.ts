@@ -54,23 +54,18 @@ export const drizzleProjectMembers = sqliteTable(
   (table) => [unique().on(table.projectId, table.userId)],
 )
 
-export type DrizzleProjectMember = InferSelectModel<
-  typeof drizzleProjectMembers
->
+export type DrizzleProjectMember = InferSelectModel<typeof drizzleProjectMembers>
 
-export const projectMembersRelations = relations(
-  drizzleProjectMembers,
-  ({ one }) => ({
-    project: one(drizzleProjects, {
-      fields: [drizzleProjectMembers.projectId],
-      references: [drizzleProjects.id],
-    }),
-    user: one(drizzleUsers, {
-      fields: [drizzleProjectMembers.userId],
-      references: [drizzleUsers.id],
-    }),
+export const projectMembersRelations = relations(drizzleProjectMembers, ({ one }) => ({
+  project: one(drizzleProjects, {
+    fields: [drizzleProjectMembers.projectId],
+    references: [drizzleProjects.id],
   }),
-)
+  user: one(drizzleUsers, {
+    fields: [drizzleProjectMembers.userId],
+    references: [drizzleUsers.id],
+  }),
+}))
 
 export const schema = {
   users: drizzleUsers,

@@ -39,7 +39,7 @@ export class CreateProjectMember {
       }
 
       return projectMember
-    } catch (_error) {
+    } catch {
       return new InternalError()
     }
   }

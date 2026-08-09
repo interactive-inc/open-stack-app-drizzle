@@ -57,9 +57,7 @@ export function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>{"-"}</CardTitle>
-          <CardDescription>
-            {"Enter your email below to login to your account"}
-          </CardDescription>
+          <CardDescription>{"Enter your email below to login to your account"}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
@@ -81,19 +79,12 @@ export function LoginPage() {
               onChange={(event) => setPassword(event.target.value)}
             />
             <div className="flex justify-end">
-              <p className="text-secondary-foreground text-sm">
-                {"Forgot your password?"}
-              </p>
+              <p className="text-secondary-foreground text-sm">{"Forgot your password?"}</p>
             </div>
           </div>
         </CardContent>
         <CardFooter>
-          <Button
-            type="submit"
-            className="w-full"
-            onClick={onLogin}
-            disabled={mutation.isPending}
-          >
+          <Button type="submit" className="w-full" onClick={onLogin} disabled={mutation.isPending}>
             {mutation.isPending ? "ログイン中..." : "ログイン"}
           </Button>
         </CardFooter>

@@ -39,7 +39,7 @@ export class DeleteProject {
       }
 
       return { id: draft.id }
-    } catch (_error) {
+    } catch {
       return new InternalError()
     }
   }

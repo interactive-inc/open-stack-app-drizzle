@@ -40,7 +40,7 @@ export class CreateUser {
       }
 
       return user
-    } catch (_error) {
+    } catch {
       return new InternalError()
     }
   }

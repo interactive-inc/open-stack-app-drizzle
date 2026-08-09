@@ -42,8 +42,7 @@ function UsersPage() {
       if (!response.ok) {
         const error = await response.json()
         const errorMessage =
-          (error as { message?: string }).message ||
-          `Failed to create user (${response.status})`
+          (error as { message?: string }).message || `Failed to create user (${response.status})`
         throw new Error(errorMessage)
       }
       return response.json()
@@ -78,9 +77,7 @@ function UsersPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New User</DialogTitle>
-              <DialogDescription>
-                Add a new user to the system
-              </DialogDescription>
+              <DialogDescription>Add a new user to the system</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               {mutation.isError && (
@@ -110,20 +107,14 @@ function UsersPage() {
                   required
                   minLength={8}
                 />
-                <p className="text-muted-foreground text-sm">
-                  Must be at least 8 characters
-                </p>
+                <p className="text-muted-foreground text-sm">Must be at least 8 characters</p>
               </div>
 
               <div className="flex gap-4">
                 <Button type="submit" disabled={mutation.isPending}>
                   {mutation.isPending ? "Creating..." : "Create User"}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
               </div>

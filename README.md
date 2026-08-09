@@ -7,31 +7,40 @@ https://developers.cloudflare.com/workers/framework-guides/web-apps/tanstack/
 ### Install the dependencies
 
 ```bash
-bun i
+vp install
 ```
 
 ### Start the development server
 
 ```bash
-bun dev
+vp dev
 ```
 
 ### Build for Production
 
 ```bash
-bun build
+vp build
 ```
 
 ### Preview the production build
 
 ```bash
-bun preview
+vp preview
 ```
 
 ### Deploy to Cloudflare
 
 ```sh
-bun run deploy
+vp run deploy
+```
+
+### Verify
+
+```bash
+vp lint
+vp fmt
+vp test
+vp run check
 ```
 
 ## マイグレーション
@@ -53,7 +62,7 @@ make apply-migration-local
 もしくは
 
 ```
-bun wrangler d1 migrations apply open-stack-cloudflare --local
+vp exec wrangler d1 migrations apply open-stack-cloudflare --local
 ```
 
 ### リモート環境のマイグレーション
@@ -61,13 +70,13 @@ bun wrangler d1 migrations apply open-stack-cloudflare --local
 以下のコマンドで本番環境のデータベースを更新します。
 
 ```
-bun wrangler d1 migrations apply open-stack-cloudflare --remote
+vp exec wrangler d1 migrations apply open-stack-cloudflare --remote
 ```
 
 ただし、先にデータベースが作成されている必要があります。
 
 ```
-bun wrangler d1 create open-stack-cloudflare
+vp exec wrangler d1 create open-stack-cloudflare
 ```
 
 ### リモートのデータベースと接続する
@@ -92,7 +101,7 @@ bun wrangler d1 create open-stack-cloudflare
 You can access Cloudflare bindings in server functions by using importable `env`:
 
 ```ts
-import { env } from 'cloudflare:workers'
+import { env } from "cloudflare:workers"
 ```
 
 See `src/api/routes/index.ts` for an example.

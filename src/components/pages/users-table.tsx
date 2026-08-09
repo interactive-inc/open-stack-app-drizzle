@@ -45,9 +45,7 @@ export function UsersTable(props: Props) {
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.login}</TableCell>
               <TableCell>{user.name}</TableCell>
-              <TableCell>
-                {new Date(user.createdAt).toLocaleDateString()}
-              </TableCell>
+              <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
             </TableRow>
           ))}
         </TableBody>

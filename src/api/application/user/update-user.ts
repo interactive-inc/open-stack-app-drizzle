@@ -46,7 +46,7 @@ export class UpdateUser {
       }
 
       return user
-    } catch (_error) {
+    } catch {
       return new InternalError()
     }
   }

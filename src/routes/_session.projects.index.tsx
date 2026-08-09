@@ -50,10 +50,7 @@ function ProjectsPage() {
 
       if (!resp.ok) {
         const errorData = await resp.json()
-        throw new Error(
-          (errorData as { message?: string }).message ||
-            "Failed to create project",
-        )
+        throw new Error((errorData as { message?: string }).message || "Failed to create project")
       }
 
       return resp.json()
@@ -74,9 +71,7 @@ function ProjectsPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="font-bold text-4xl tracking-tight">Projects</h1>
-          <p className="mt-2 text-muted-foreground">
-            Manage your projects and teams
-          </p>
+          <p className="mt-2 text-muted-foreground">Manage your projects and teams</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
@@ -88,9 +83,7 @@ function ProjectsPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Project</DialogTitle>
-              <DialogDescription>
-                Add a new project to the system
-              </DialogDescription>
+              <DialogDescription>Add a new project to the system</DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               {mutation.isError && (
@@ -114,11 +107,7 @@ function ProjectsPage() {
                 <Button type="submit" disabled={mutation.isPending}>
                   {mutation.isPending ? "Creating..." : "Create Project"}
                 </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                >
+                <Button type="button" variant="outline" onClick={() => setOpen(false)}>
                   Cancel
                 </Button>
               </div>

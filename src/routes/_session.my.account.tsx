@@ -1,12 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { use } from "react"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SessionContext } from "@/contexts/session-context"
 
 export const Route = createFileRoute("/_session/my/account")({
@@ -20,9 +14,7 @@ function RouteComponent() {
     <div className="container mx-auto px-4 py-10">
       <div className="mb-8">
         <h1 className="font-bold text-4xl tracking-tight">My Account</h1>
-        <p className="mt-2 text-muted-foreground">
-          Manage your account settings
-        </p>
+        <p className="mt-2 text-muted-foreground">Manage your account settings</p>
       </div>
 
       <Card>

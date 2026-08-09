@@ -37,7 +37,7 @@ export class UpdateProject {
       }
 
       return null
-    } catch (_error) {
+    } catch {
       return new InternalError()
     }
   }

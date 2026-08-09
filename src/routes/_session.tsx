@@ -34,9 +34,7 @@ function RouteComponent() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <span className="text-muted-foreground text-sm">
-                {session.email}
-              </span>
+              <span className="text-muted-foreground text-sm">{session.email}</span>
               <Button asChild variant="outline" size="sm">
                 <Link to="/my/account">Account</Link>
               </Button>

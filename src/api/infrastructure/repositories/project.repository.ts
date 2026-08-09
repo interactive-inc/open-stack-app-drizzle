@@ -9,10 +9,9 @@ export class ProjectRepository {
 
   async write(entity: ProjectEntity) {
     try {
-      const existingProject =
-        await this.c.var.database.query.projects.findFirst({
-          where: eq(drizzleProjects.id, entity.id),
-        })
+      const existingProject = await this.c.var.database.query.projects.findFirst({
+        where: eq(drizzleProjects.id, entity.id),
+      })
 
       if (existingProject === undefined) {
         await this.c.var.database.insert(drizzleProjects).values({

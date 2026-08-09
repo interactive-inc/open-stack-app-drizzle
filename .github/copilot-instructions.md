@@ -25,9 +25,9 @@ Modern React application with TanStack Router and component library. Features ro
 - React 19 with TypeScript
 - shadcn/ui component system
 - Tailwind CSS v4 for styling
-- Vite for build tooling
-- Bun for package management and testing
-- Biome for linting and formatting
+- Vite+ for build tooling
+- Bun runtime and package manager (managed through Vite+)
+- Vite+ for linting, formatting, and testing
 - Model Context Protocol for documentation
 
 ## Data Fetching Pattern
@@ -37,6 +37,7 @@ Modern React application with TanStack Router and component library. Features ro
 Use React Suspense with `use(query.promise)` for data fetching components:
 
 **Parent Component (Route)**:
+
 ```typescript
 function ParentPage() {
   const query = useQuery({
@@ -58,6 +59,7 @@ function ParentPage() {
 ```
 
 **Child Component (Table/Display)**:
+
 ```typescript
 import type { UseQueryResult } from "@tanstack/react-query"
 import type { InferResponseType } from "hono/client"
@@ -81,6 +83,7 @@ export function DataTable(props: Props) {
 ```
 
 **Key Points**:
+
 - Parent components manage `useQuery` and pass query object to children
 - Child components use `use(props.query.promise)` to unwrap data
 - Suspense handles loading states declaratively
@@ -98,7 +101,7 @@ const mutation = useMutation({
     return response.json()
   },
   async onSuccess() {
-    await query.refetch()  // Directly refetch the query
+    await query.refetch() // Directly refetch the query
   },
 })
 ```

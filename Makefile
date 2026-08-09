@@ -2,9 +2,10 @@ update:
 	bunx --bun shadcn@latest add -a -o -y
 	bunx --bun shadcn@latest migrate radix -y
 	bunx npm-check-updates -u
-	bun i
+	vp install
 	rm src/components/ui/chart.tsx
-	biome check . --fix --unsafe
+	vp fmt --write
+	vp lint --fix
 
 create-migration:
 	bun drizzle-kit generate

@@ -9,11 +9,7 @@ import { vSessionPayload } from "@/lib/session/session-payload"
 export const sessionMiddleware = factory.createMiddleware(async (c, next) => {
   c.set("session", null)
 
-  const cookie = await getSignedCookie(
-    c,
-    c.env.JWT_COOKIE_SECRET,
-    c.env.JWT_COOKIE_KEY,
-  )
+  const cookie = await getSignedCookie(c, c.env.JWT_COOKIE_SECRET, c.env.JWT_COOKIE_KEY)
 
   if (typeof cookie !== "string") {
     return next()

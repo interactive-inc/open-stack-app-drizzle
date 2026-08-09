@@ -23,10 +23,7 @@ export class DeleteProjectMember {
 
   async run(props: Props) {
     try {
-      const projectMember = await this.deps.repository.read(
-        props.projectId,
-        props.userId,
-      )
+      const projectMember = await this.deps.repository.read(props.projectId, props.userId)
 
       if (projectMember === null) {
         return new NotFoundError("プロジェクトメンバーが見つかりませんでした。")
@@ -37,7 +34,7 @@ export class DeleteProjectMember {
         .where(eq(drizzleProjectMembers.id, projectMember.id))
 
       return { id: projectMember.id }
-    } catch (_error) {
+    } catch {
       return new InternalError()
     }
   }

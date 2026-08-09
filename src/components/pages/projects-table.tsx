@@ -43,12 +43,8 @@ export function ProjectsTable(props: Props) {
           {projects.map((project) => (
             <TableRow key={project.id}>
               <TableCell className="font-medium">{project.name}</TableCell>
-              <TableCell className="font-mono text-xs">
-                {project.login}
-              </TableCell>
-              <TableCell>
-                {new Date(project.createdAt).toLocaleDateString()}
-              </TableCell>
+              <TableCell className="font-mono text-xs">{project.login}</TableCell>
+              <TableCell>{new Date(project.createdAt).toLocaleDateString()}</TableCell>
               <TableCell>
                 <Button asChild variant="outline" size="sm">
                   <Link to="/projects/$id" params={{ id: project.id }}>

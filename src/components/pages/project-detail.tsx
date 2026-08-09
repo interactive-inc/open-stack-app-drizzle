@@ -3,13 +3,7 @@ import type { InferResponseType } from "hono/client"
 import { Trash2, UserPlus } from "lucide-react"
 import { use, useState } from "react"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -54,19 +48,14 @@ type Props = {
 export function ProjectDetail(props: Props) {
   const [open, setOpen] = useState(false)
   const [userId, setUserId] = useState("")
-  const [role, setRole] = useState<"OWNER" | "ADMIN" | "MEMBER" | "VIEWER">(
-    "MEMBER",
-  )
+  const [role, setRole] = useState<"OWNER" | "ADMIN" | "MEMBER" | "VIEWER">("MEMBER")
 
   const project = use(props.projectQuery.promise)
   const members = use(props.membersQuery.promise)
   const users = use(props.usersQuery.promise)
 
   const addMemberMutation = useMutation({
-    async mutationFn(data: {
-      userId: string
-      role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER"
-    }) {
+    async mutationFn(data: { userId: string; role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER" }) {
       const response = await client.api.projects[":id"].members.$post({
         param: { id: props.projectId },
         json: data,
@@ -85,9 +74,7 @@ export function ProjectDetail(props: Props) {
 
   const removeMemberMutation = useMutation({
     async mutationFn(data: { userId: string }) {
-      const response = await client.api.projects[":id"].members[
-        ":userId"
-      ].$delete({
+      const response = await client.api.projects[":id"].members[":userId"].$delete({
         param: { id: props.projectId, userId: data.userId },
       })
 
@@ -129,9 +116,7 @@ export function ProjectDetail(props: Props) {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Project Members</CardTitle>
-              <CardDescription>
-                Manage who has access to this project
-              </CardDescription>
+              <CardDescription>Manage who has access to this project</CardDescription>
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
@@ -156,10 +141,7 @@ export function ProjectDetail(props: Props) {
                       </SelectTrigger>
                       <SelectContent>
                         {users
-                          .filter(
-                            (user) =>
-                              !members.some((m) => m.userId === user.id),
-                          )
+                          .filter((user) => !members.some((m) => m.userId === user.id))
                           .map((user) => (
                             <SelectItem key={user.id} value={user.id}>
                               {user.email} ({user.login})
@@ -171,10 +153,7 @@ export function ProjectDetail(props: Props) {
 
                   <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
-                    <Select
-                      value={role}
-                      onValueChange={(v) => setRole(v as typeof role)}
-                    >
+                    <Select value={role} onValueChange={(v) => setRole(v as typeof role)}>
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -210,17 +189,13 @@ export function ProjectDetail(props: Props) {
               {members.map((member) => (
                 <TableRow key={member.id}>
                   <TableCell>{member.user.email}</TableCell>
-                  <TableCell className="font-mono text-xs">
-                    {member.user.login}
-                  </TableCell>
+                  <TableCell className="font-mono text-xs">{member.user.login}</TableCell>
                   <TableCell>
                     <span className="inline-flex items-center rounded-full px-2 py-1 font-medium text-xs ring-1 ring-gray-500/10 ring-inset">
                       {member.role}
                     </span>
                   </TableCell>
-                  <TableCell>
-                    {new Date(member.createdAt).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{new Date(member.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"

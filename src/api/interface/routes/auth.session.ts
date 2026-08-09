@@ -4,11 +4,7 @@ import { factory } from "@/api/interface/factory"
 import { vSessionPayload } from "@/lib/session/session-payload"
 
 export const GET = factory.createHandlers(async (c) => {
-  const cookie = await getSignedCookie(
-    c,
-    c.env.JWT_COOKIE_SECRET,
-    c.env.JWT_COOKIE_KEY,
-  )
+  const cookie = await getSignedCookie(c, c.env.JWT_COOKIE_SECRET, c.env.JWT_COOKIE_KEY)
 
   if (typeof cookie !== "string") {
     return c.json(null)
